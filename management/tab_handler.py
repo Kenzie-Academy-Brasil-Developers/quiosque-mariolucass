@@ -1,8 +1,9 @@
 from menu import products
 
 
-def calculate_tab(list: list):
+def calculate_tab(list: list) -> str:
     amountTotal = 0
+
     for object in list:
         for product in products:
             if product["_id"] == object["_id"]:
