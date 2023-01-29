@@ -3,49 +3,39 @@ from collections import Counter
 from numpy import average
 
 
-def get_product_by_id(id: int):
-
+def get_product_by_id(id: int) -> dict:
     if type(id) is not int:
         raise TypeError("product id must be an int")
 
     for product in products:
         if product["_id"] == id:
             return product
-
     return {}
 
 
-def get_products_by_type(typeParam: str):
-
+def get_products_by_type(typeParam: str) -> list:
     if type(typeParam) is not str:
         raise TypeError("product type must be a str")
 
-    products_type = []
+    products_with_same_type = []
 
     for product in products:
         if product["type"] == typeParam:
-            products_type.append(product)
 
-    if len(products_type):
+            products_with_same_type.append(product)
 
-        return products_type
-
+    if len(products_with_same_type):
+        return products_with_same_type
     return []
 
 
-def add_product(menu, **product):
-    if len(menu) == 0:
-        product["_id"] = 1
-    else:
-        product["_id"] = len(menu) + 1
-
+def add_product(menu: list, **product: dict) -> dict:
+    product["_id"] = len(menu) + 1
     menu.append(product)
-
     return product
-    ...
 
 
-def menu_report():
+def menu_report() -> str:
     menu_length = len(products)
     prices = []
     types = []
@@ -58,16 +48,23 @@ def menu_report():
     common_type = counter_of_types.most_common(1)[0][0]
 
     avg_price = average(prices)
-
     avg_price = round(avg_price, 2)
 
     return f"Products Count: {menu_length} - Average Price: ${avg_price} - Most Common Type: {common_type}"
 
 
-def add_product_extra(menu, *required_keys, **product):
-    for key in required_keys:
-        print(key)
-        print(product[f"{key}"], key)
+def add_product_extra(menu: list, *required_keys: dict, **product: dict) -> dict:
+    keys_product = [*product]
+    keys_required = [*required_keys]
 
-        # if product["key"] not in required_keys:
-        #     raise KeyError(f"field {key} is required")
+    for key in keys_required:
+        if key not in keys_product:
+            raise KeyError(f"field {key} is required")
+
+    for key in keys_product:
+        if key not in keys_required:
+            product.pop(key)
+
+    product["_id"] = len(menu) + 1
+    menu.append(product)
+    return product
