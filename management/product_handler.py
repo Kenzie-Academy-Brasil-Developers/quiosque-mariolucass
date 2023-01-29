@@ -1,6 +1,6 @@
-import numpy
 from menu import products
 from collections import Counter
+from numpy import average
 
 
 def get_product_by_id(id: int):
@@ -47,15 +47,27 @@ def add_product(menu, **product):
 
 def menu_report():
     menu_length = len(products)
-    avg_price = []
-    common_types = []
+    prices = []
+    types = []
 
     for product in products:
-        avg_price.append(product["price"])
-        common_types.append(product["type"])
+        prices.append(product["price"])
+        types.append(product["type"])
 
-    common_type = Counter(common_types).most_common(1)[0][0]
-    avg_price = numpy.mean(avg_price)
+    counter_of_types = Counter(types)
+    common_type = counter_of_types.most_common(1)[0][0]
+
+    avg_price = average(prices)
+
     avg_price = round(avg_price, 2)
 
     return f"Products Count: {menu_length} - Average Price: ${avg_price} - Most Common Type: {common_type}"
+
+
+def add_product_extra(menu, *required_keys, **product):
+    for key in required_keys:
+        print(key)
+        print(product[f"{key}"], key)
+
+        # if product["key"] not in required_keys:
+        #     raise KeyError(f"field {key} is required")
